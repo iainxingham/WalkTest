@@ -56,6 +56,8 @@ void DBObj::db_setpath(QString path)
 // If it doesn't exist create and return id
 // Update nhs number if not already in database
 // Return negative number if something goes wrong
+
+// Not (yet) adding date created / updated in this version of function
 int DBObj::db_getpatid(QString rxr, QString nhs)
 {
     QSqlQuery q1, q2;
@@ -204,6 +206,7 @@ QString DBObj::DBSexToString(DB_Sex s)
 {
     if(s == DB_Sex::Male) return "Male";
     if(s == DB_Sex::Female) return "Female";
+    if(s == DB_Sex::Unknown) return "Unknown";
 
     return QString();
 }
@@ -221,9 +224,48 @@ void DBObj::db_insertphysiology(int patid, DB_Physiology type, double result, QD
     q1.bindValue(":type", DBPhysiologyToString(type));
     q1.bindValue(":result", QString::number(result));
 
-    // execute query
+    q1.exec();
 
     db_setpat_updated(patid, testdate);
 }
 
-// db_setpat_updated() and DBPhysiologyToString()
+void DBObj::db_setpat_updated(int patid, QDate newdate)
+{
+    if(patid < 0) return;
+
+    QSqlQuery q1;
+
+    q1.prepare("UPDATE pats SET updated = ? WHERE id = ?");
+    q1.addBindValue(newdate.toString());
+    q1.addBindValue(patid);
+    q1.exec();
+}
+
+QString DBObj::DBPhysiologyToString(DB_Physiology p)
+{
+    if(p == DB_Physiology::Height) return "Height";
+    if(p == DB_Physiology::Weight) return "Weight";
+    if(p == DB_Physiology::FeNO) return "FeNO";
+
+    return QString();
+}
+
+// Doesn't have error checking for invalid patid
+DB_Patient DBObj::db_getpatdetails(int patid)
+{
+    DB_Patient ret;
+    QSqlQuery q1;
+
+    q1.prepare("SELECT rxr, nhs, fname, sname, dob FROM pats WHERE id = ?");
+    q1.addBindValue(patid);
+    q1.exec();
+
+    ret.id = patid;
+    ret.rxr = q1.value(0).toString();
+    ret.nhs = q1.value(1).toString();
+    ret.fname = q1.value(2).toString();
+    ret.sname = q1.value(3).toString();
+    ret.dob = q1.value(4).toDate();
+
+    return ret;
+}

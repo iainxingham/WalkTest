@@ -8,7 +8,8 @@
 enum class DB_Sex
 {
     Male,
-    Female
+    Female,
+    Unknown
 };
 
 enum class DB_Physiology
@@ -16,6 +17,16 @@ enum class DB_Physiology
     Height,
     Weight,
     FeNO
+};
+
+struct DB_Patient
+{
+    int id;
+    QString rxr;
+    QString nhs;
+    QString fname;
+    QString sname;
+    QDate dob;
 };
 
 class DBObj
@@ -32,6 +43,7 @@ public:
     bool db_rxrexists(QString rxr);
     void db_insertphysiology(int patid, DB_Physiology type, double result, QDate testdate=QDate::currentDate());
     void db_setpat_updated(int patid, QDate newdate=QDate::currentDate());
+    DB_Patient db_getpatdetails(int patid);
 
     // Validate data for database
     bool valid_rxr(QString rxr);

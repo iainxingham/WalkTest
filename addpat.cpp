@@ -45,9 +45,9 @@ void addPat::on_buttonBox_accepted()
         // ?? Screen to check details
     }
     else {
-        // Need to check behaviour if sex hasn't been specified
         if(ui->sexMradioButton->isChecked()) s = DB_Sex::Male;
-        else if(ui->sexFradioButton->isChecked())s = DB_Sex::Female;
+        else if(ui->sexFradioButton->isChecked()) s = DB_Sex::Female;
+        else s = DB_Sex::Unknown;
 
         patid = ClinicalDB->db_getpatid(ui->rxrEdit->text(),
                                         ui->nhsEdit->text(),

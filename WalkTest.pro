@@ -19,16 +19,19 @@ SOURCES += \
     addpat.cpp \
     dbobj.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    walktest.cpp
 
 HEADERS += \
     addpat.h \
     dbobj.h \
-    mainwindow.h
+    mainwindow.h \
+    walktest.h
 
 FORMS += \
     addpat.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    walktest.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
